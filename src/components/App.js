@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import './App.css';
 import SwitchButton from './SwitchButton';
 import Word from './Word';
+import ButtonFetchUsers from './ButtonFetchUsers';
+import UserList from './UserList';
 
 //Project 2
 const data = [
@@ -27,6 +29,8 @@ setInterval(() => {
   //console.log(data);
 }, 8000)
 
+//Project 5
+const API = 'https://randomuser.me/api/?results=5';
 
 class App extends Component {
   state = {
@@ -35,7 +39,8 @@ class App extends Component {
     comments: [...data],   //Project 2
     words: [],             //Project 3
     isLoaded: false,       //Project 3
-    users: []              //Project 4
+    users: [],             //Project 4
+    users2: null           //Project 5
   }
 
   //Project 1
@@ -105,14 +110,37 @@ class App extends Component {
     // }
 
     xhr.addEventListener('load', () => {
-      console.log(xhr.status);
+      //console.log(xhr.status);
       if (xhr.status === 200) {
         const users = JSON.parse(xhr.response)
-        console.log(users);
+        //console.log(users);
         this.setState({ users })
       }
     })
     xhr.send(null)
+  }
+
+  //Project 5
+  handleDataFetch = () => {
+    // console.log("click");
+    fetch(API)
+      .then(response => {
+        if (response.ok) {
+          // console.log(response);
+          return response;
+        }
+        throw Error(response.status)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          users2: data.results
+        })
+
+      })
+      .catch(error => console.log(error + " sth is wrong"))
+
   }
 
 
@@ -134,6 +162,7 @@ class App extends Component {
         <p>{user.city}</p>
       </div>
     ))
+    const users2 = this.state.users2;
     return (
       <div>
         <div className='app'>
@@ -151,6 +180,11 @@ class App extends Component {
 
         <div>
           {users}
+        </div>
+
+        <div>
+          <ButtonFetchUsers click={this.handleDataFetch} />
+          {users2 ? <UserList users={users2} /> : users2}
         </div>
       </div>
      
