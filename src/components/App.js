@@ -24,7 +24,7 @@ setInterval(() => {
     title: `Title ${index}`,
     body: `Text ${index}`
   })
-  console.log(data);
+  //console.log(data);
 }, 8000)
 
 
@@ -34,7 +34,8 @@ class App extends Component {
     active: false,         //Project 1
     comments: [...data],   //Project 2
     words: [],             //Project 3
-    isLoaded: false        //Project 3
+    isLoaded: false,       //Project 3
+    users: []              //Project 4
   }
 
   //Project 1
@@ -58,7 +59,7 @@ class App extends Component {
 
   //Project 2
   getData = () => {
-    console.log('aktualizacja');
+    //console.log('aktualizacja');
     if(this.state.comments.length !== data.length) {
       this.setState({
       comments: [...data]
@@ -75,7 +76,7 @@ class App extends Component {
   }*/
 
   //Project 3
-  componentDidMount() {
+  /*componentDidMount() {
     //setTimeout(this.fetchData, 3000)
     fetch('data/words.json')
       .then(response => response.json())
@@ -85,7 +86,35 @@ class App extends Component {
           isLoaded: true
         })
       })
+  }*/
+
+  //Project 4
+  componentDidMount() {
+    // this.requestData()
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://jsonplaceholder.typicode.com/users', true);
+
+    // xhr.onload = () => {
+    //   console.log(xhr.status);
+    //   if (xhr.status === 200) {
+    //     const users = JSON.parse(xhr.response)
+    //     console.log(users);
+    //     this.setState({ users })
+    //   }
+    //   // console.log(typeof xhr.response);
+    // }
+
+    xhr.addEventListener('load', () => {
+      console.log(xhr.status);
+      if (xhr.status === 200) {
+        const users = JSON.parse(xhr.response)
+        console.log(users);
+        this.setState({ users })
+      }
+    })
+    xhr.send(null)
   }
+
 
   render() {
     const comments = this.state.comments.map(comment => (
@@ -98,6 +127,12 @@ class App extends Component {
       <Word key={word.id} 
             english={word.en}
             polish={word.pl} />
+    ))
+    const users = this.state.users.map(user => (
+      <div key={user.id}>
+        <h4>{user.name}</h4>
+        <p>{user.city}</p>
+      </div>
     ))
     return (
       <div>
@@ -113,6 +148,10 @@ class App extends Component {
         <ul>
           {this.state.isLoaded ? words : 'Uploading data'}
         </ul>
+
+        <div>
+          {users}
+        </div>
       </div>
      
     )
