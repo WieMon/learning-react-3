@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import SwitchButton from './SwitchButton';
+import Word from './Word';
 
 //Project 2
 const data = [
@@ -29,9 +30,11 @@ setInterval(() => {
 
 class App extends Component {
   state = {
-    time: 0,
-    active: false,
-    comments: [...data]
+    time: 0,               //Project 1
+    active: false,         //Project 1
+    comments: [...data],   //Project 2
+    words: [],             //Project 3
+    isLoaded: false        //Project 3
   }
 
   //Project 1
@@ -63,12 +66,25 @@ class App extends Component {
     } else {console.log('data the same - no actualization')}
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     this.idI = setInterval(this.getData, 5000)
-  }
+  }*/ //cannot be two 'componentDidMount'
 
-  componentWillUnmount() {
+  /*componentWillUnmount() {
     clearInterval(this.idI)
+  }*/
+
+  //Project 3
+  componentDidMount() {
+    //setTimeout(this.fetchData, 3000)
+    fetch('data/words.json')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          words: data.words,
+          isLoaded: true
+        })
+      })
   }
 
   render() {
@@ -77,6 +93,11 @@ class App extends Component {
         <h4>{comment.title}</h4>
         <div>{comment.body}</div>
       </div>
+    ))
+    const words = this.state.words.map(word => (
+      <Word key={word.id} 
+            english={word.en}
+            polish={word.pl} />
     ))
     return (
       <div>
@@ -88,6 +109,10 @@ class App extends Component {
         <div className='app'>
           {comments.reverse()}
         </div>
+
+        <ul>
+          {this.state.isLoaded ? words : 'Uploading data'}
+        </ul>
       </div>
      
     )
