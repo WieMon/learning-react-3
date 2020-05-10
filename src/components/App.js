@@ -30,7 +30,7 @@ setInterval(() => {
 }, 8000)
 
 //Project 5
-const API = 'https://randomuser.me/api/?results=5';
+const API = 'https://randomuser.me/api/?results=1';
 
 class App extends Component {
   state = {
@@ -40,7 +40,7 @@ class App extends Component {
     words: [],             //Project 3
     isLoaded: false,       //Project 3
     users: [],             //Project 4
-    users2: null           //Project 5
+    users2: []           //Project 5
   }
 
   //Project 1
@@ -133,14 +133,14 @@ class App extends Component {
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        this.setState({
-          users2: data.results
-        })
+        //console.log(data);
+        const user2 = data.results
+        this.setState(prevState => ({
+          users2: prevState.users2.concat(user2)
+        }))
 
       })
       .catch(error => console.log(error + " sth is wrong"))
-
   }
 
 
@@ -184,7 +184,7 @@ class App extends Component {
 
         <div>
           <ButtonFetchUsers click={this.handleDataFetch} />
-          {users2 ? <UserList users={users2} /> : users2}
+          {users2.length > 0 ? <UserList users={users2} /> : users2}
         </div>
       </div>
      
